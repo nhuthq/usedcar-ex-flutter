@@ -1,14 +1,10 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:usedcar_ex_flutter/presentation/widgets/base_statefull_widget.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class MainWebview extends StatefulWidget {
   const MainWebview(
-      {super.key, required this.controller, required this.topUrl});
-  final String topUrl;
+      {super.key, required this.controller});
   final WebViewController controller;
 
   @override

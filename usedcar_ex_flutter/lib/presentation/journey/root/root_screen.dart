@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:usedcar_ex_flutter/config/theme.dart';
 import 'package:usedcar_ex_flutter/presentation/journey/Home/home_screen.dart';
 import 'package:usedcar_ex_flutter/presentation/journey/KodawariSearch/kodawari_search_screen.dart';
 import 'package:usedcar_ex_flutter/presentation/journey/RecentSearch/recent_search_screen.dart';
 import 'package:usedcar_ex_flutter/presentation/journey/Search/search_screen.dart';
 import 'package:usedcar_ex_flutter/presentation/journey/favorite/favorite_screen.dart';
+import 'package:usedcar_ex_flutter/presentation/widgets/custom_nav_bar.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -16,21 +17,29 @@ class RootScreen extends StatefulWidget {
 
 class _RootScreenState extends State<RootScreen> {
   late String _title;
+  late final List<Widget> _chilScreens;
   late final ValueNotifier<int> _tabNotifier;
+  late final WebViewController _webViewController;
+
   DateTime currentBackPressTime = DateTime.now();
-  final List<Widget> _chilScreens = const [
-    HomeScreen(),
-    SearchScreen(),
-    KodawariSearchScreen(),
-    RecentSearchScreen(),
-    FavoriteScreen(),
-  ];
 
   @override
   void initState() {
     super.initState();
     _title = 'Home';
     _tabNotifier = ValueNotifier(0);
+    _webViewController = WebViewController();
+
+    _chilScreens = [
+      HomeScreen(
+        controller: _webViewController,
+        topURL: 'https://flutter.dev',
+      ),
+      SearchScreen(),
+      KodawariSearchScreen(),
+      RecentSearchScreen(),
+      FavoriteScreen(),
+    ];
   }
 
   @override
@@ -42,7 +51,10 @@ class _RootScreenState extends State<RootScreen> {
         animation: _tabNotifier,
         builder: (_, __) {
           return Scaffold(
-            appBar: AppBar(title: Text(_title)),
+            appBar: AppBar(
+              title: Text(_title),
+              actions: [CustomNavigationBar(controller: _webViewController)],
+            ),
             endDrawer: _buildDrawer(context),
             body:
                 IndexedStack(index: _tabNotifier.value, children: _chilScreens),
